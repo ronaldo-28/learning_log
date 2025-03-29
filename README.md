@@ -26,6 +26,7 @@ python -m venv ll_env
 ```
 
 Activate the virtual environment by running:
+
 windows powershell:
 ```powershell
 .\ll_env\Scripts\Activate.ps1
