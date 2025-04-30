@@ -20,7 +20,7 @@ SECRET_KEY = os.environ.get(
 # DEFINE DEBUG HERE:
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-# Configure ALLOWED_HOSTS for Vercel (Uses VERCEL_URL, which is fine to define later if needed)
+# Configure ALLOWED_HOSTS for Vercel
 ALLOWED_HOSTS = []
 VERCEL_URL = os.environ.get('VERCEL_URL') # Specific deployment URL
 
@@ -30,7 +30,7 @@ if VERCEL_URL:
 ALLOWED_HOSTS.append('.vercel.app') # Add wildcard
 
 # Fallback for local development
-if not ALLOWED_HOSTS or DEBUG: # It's okay to use DEBUG here as it's defined above
+if not ALLOWED_HOSTS or DEBUG:
     ALLOWED_HOSTS.extend(['localhost', '127.0.0.1'])
 
 ALLOWED_HOSTS = list(set(ALLOWED_HOSTS)) # Remove duplicates
@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     # Third party apps.
     'django_bootstrap5',
 
-    # Default django apps. (Ensure these are all present)
-    'django.contrib.admin',       # <--- MUST BE PRESENT
+    # Default django apps.
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -58,15 +58,36 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    # ... other middleware
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Should be high up, after SecurityMiddleware
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'll_project.urls'
 
+# --- THIS IS THE CORRECTED TEMPLATES SECTION ---
 TEMPLATES = [
-    # ... your template config
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Tells Django where to look for project-level templates (like registration/login.html)
+        'DIRS': [BASE_DIR / 'templates'],
+        # Tells Django to look inside each app's 'templates' directory
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
 ]
+# --- END OF CORRECTED TEMPLATES SECTION ---
 
 WSGI_APPLICATION = 'll_project.wsgi.application'
 
@@ -75,27 +96,41 @@ WSGI_APPLICATION = 'll_project.wsgi.application'
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     'default': dj_database_url.config(
+        # Set SSL require for PostgreSQL connections in production
         conn_max_age=600,
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+        ssl_require=os.environ.get('DJANGO_DB_SSL_REQUIRE', 'False') == 'True', # Read SSL setting from env var
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}" # Fallback to SQLite locally
     )
 }
 
 
 # Password validation
-# ... validators
+# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
+AUTH_PASSWORD_VALIDATORS = [
+    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+]
 
 
 # Internationalization
-# ... i18n settings
+# https://docs.djangoproject.com/en/dev/topics/i18n/
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/dev/howto/static-files/
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles' # Directory where collectstatic gathers files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Default primary key field type
+# https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # My settings.
@@ -108,16 +143,16 @@ LOGIN_URL = 'accounts:login'
 CSRF_TRUSTED_ORIGINS = []
 if VERCEL_URL:
     CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_URL.replace("https://", "").rstrip("/")}')
-CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app')
+CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app') # Trust wildcard Vercel domains
 # Add custom domains if needed
 CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
 
 # Use secure cookies in production
-# THIS SECTION MUST COME *AFTER* DEBUG IS DEFINED
 if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
-    # SECURE_HSTS_SECONDS = 31536000 # Optional HSTS
+    SECURE_SSL_REDIRECT = True # Vercel handles HTTPS termination
+    # Optional HSTS settings
+    # SECURE_HSTS_SECONDS = 31536000
     # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     # SECURE_HSTS_PRELOAD = True
