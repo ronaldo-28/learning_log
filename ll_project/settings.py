@@ -37,9 +37,22 @@ ALLOWED_HOSTS = list(set(ALLOWED_HOSTS)) # Remove duplicates
 
 
 # Application definition
+
 INSTALLED_APPS = [
-    # ... your apps
-    'whitenoise.runserver_nostatic',
+    # My apps.
+    'learning_logs',
+    'accounts',
+
+    # Third party apps.
+    'django_bootstrap5',
+
+    # Default django apps. (Ensure these are all present)
+    'django.contrib.admin',       # <--- MUST BE PRESENT
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'whitenoise.runserver_nostatic', # Correct place for whitenoise (before staticfiles)
     'django.contrib.staticfiles',
 ]
 
