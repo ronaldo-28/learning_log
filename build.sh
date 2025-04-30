@@ -1,24 +1,14 @@
 #!/bin/bash
-
-# Exit immediately if a command exits with a non-zero status.
 set -e
-
-echo "BUILD SCRIPT STARTING..." # Added for clear log indication
-
-# Upgrade pip and install requirements
+echo "BUILD SCRIPT STARTING..."
 echo "Installing dependencies..."
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python3 -m pip install --upgrade pip # Use python3
+python3 -m pip install -r requirements.txt # Use python3
 echo "Dependencies installed."
-
-# Collect static files
 echo "Collecting static files..."
-python manage.py collectstatic --noinput --clear
+python3 manage.py collectstatic --noinput --clear # Use python3
 echo "Static files collected."
-
-# Apply database migrations (CRITICAL STEP)
 echo "Applying database migrations..."
-python manage.py migrate --noinput
+python3 manage.py migrate --noinput # Use python3
 echo "Database migrations applied."
-
 echo "BUILD SCRIPT FINISHED."
