@@ -152,7 +152,7 @@ CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
 if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True # Vercel handles HTTPS termination
+    SECURE_SSL_REDIRECT = True #  Vercel handles HTTPS termination
     # Optional HSTS settings
     # SECURE_HSTS_SECONDS = 31536000
     # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
