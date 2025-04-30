@@ -16,10 +16,6 @@
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
-      "handle": "filesystem"
-    },
-    {
       "src": "/(.*)",
       "dest": "ll_project/wsgi.py"
     }
