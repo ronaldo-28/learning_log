@@ -17,12 +17,11 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEFINE DEBUG HERE:
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 # Configure ALLOWED_HOSTS for Vercel
 ALLOWED_HOSTS = []
-VERCEL_URL = os.environ.get('VERCEL_URL') # Specific deployment URL
+VERCEL_URL = os.environ.get('VERCEL_URL')
 
 if VERCEL_URL:
     ALLOWED_HOSTS.append(VERCEL_URL.replace('https://', '').rstrip('/'))
@@ -52,13 +51,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic', # Correct place for whitenoise (before staticfiles)
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Should be high up, after SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -69,13 +68,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'll_project.urls'
 
-# --- THIS IS THE CORRECTED TEMPLATES SECTION ---
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Tells Django where to look for project-level templates (like registration/login.html)
         'DIRS': [BASE_DIR / 'templates'],
-        # Tells Django to look inside each app's 'templates' directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,7 +83,6 @@ TEMPLATES = [
         },
     },
 ]
-# --- END OF CORRECTED TEMPLATES SECTION ---
 
 WSGI_APPLICATION = 'll_project.wsgi.application'
 
@@ -96,10 +91,9 @@ WSGI_APPLICATION = 'll_project.wsgi.application'
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     'default': dj_database_url.config(
-        # Set SSL require for PostgreSQL connections in production
         conn_max_age=600,
-        ssl_require=os.environ.get('DJANGO_DB_SSL_REQUIRE', 'False') == 'True', # Read SSL setting from env var
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}" # Fallback to SQLite locally
+        ssl_require=os.environ.get('DJANGO_DB_SSL_REQUIRE', 'False') == 'True',
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
     )
 }
 
@@ -117,15 +111,18 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+
+TIME_ZONE = 'Asia/Kolkata' # <-- Changed for IST display
+
 USE_I18N = True
-USE_TZ = True
+
+USE_TZ = True              # <-- Kept True (Recommended)
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles' # Directory where collectstatic gathers files
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
@@ -137,14 +134,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'learning_logs:index'
 LOGOUT_REDIRECT_URL = 'learning_logs:index'
 LOGIN_URL = 'accounts:login'
-# Trigger rebuild
 
 
 # Vercel specific settings / CSRF
 CSRF_TRUSTED_ORIGINS = []
 if VERCEL_URL:
     CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_URL.replace("https://", "").rstrip("/")}')
-CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app') # Trust wildcard Vercel domains
+CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app')
 # Add custom domains if needed
 CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
 
@@ -152,7 +148,7 @@ CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
 if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True #  Vercel handles HTTPS termination
+    SECURE_SSL_REDIRECT = True
     # Optional HSTS settings
     # SECURE_HSTS_SECONDS = 31536000
     # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
