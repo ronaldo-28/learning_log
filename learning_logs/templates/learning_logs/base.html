@@ -1,80 +1,97 @@
+{% load django_bootstrap5 %}
+{% load static %} {# Still load static in case other things use it, though not for this specific CSS #}
+
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Learning Log</title>
 
-  {% load django_bootstrap5 %}
   {% bootstrap_css %}
-  {% bootstrap_javascript %}
+
+  <!-- EMBEDDED CUSTOM CSS -->
+  <style>
+    body {
+      /* Add padding to the bottom of the body equal to the footer's height + some breathing room */
+      /* You'll need to determine the footer_height. Let's assume it's around 70px-80px. */
+      /* If your footer text is two lines with default Bootstrap padding, ~60-75px might be its height. */
+      /* Add a bit more for safety. */
+      padding-bottom: 90px; /* Adjust this value as needed */
+    }
+
+    .fixed-footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      z-index: 1000; /* Ensures it stays on top of other content if needed */
+      /* background-color and other styling are from Bootstrap classes */
+    }
+  </style>
+  <!-- END EMBEDDED CUSTOM CSS -->
 
 </head>
-
 <body>
+
+  <!-- Navigation bar -->
   <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
-        Learning Log</a>
+      <a class="navbar-brand" href="{% url 'learning_logs:index' %}">Learning Log</a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+          aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'learning_logs:topics' %}">
-              Topics</a>
+            <a class="nav-link" href="{% url 'learning_logs:topics' %}">Topics</a>
           </li>
-        </ul> <!-- End of links on left side of navbar -->
-
-        <!-- Account-related links -->
+        </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-
           {% if user.is_authenticated %}
-          <li class="nav-item">
-            <span class="navbar-text me-2">Hello, {{ user.username }}.
-            </span>
-          </li>
+            <li class="nav-item">
+              <span class="navbar-text me-2">Hello, {{ user.username }}.</span>
+            </li>
+            <li class="nav-item">
+              <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link nav-link" style="padding-top: 0.6rem; padding-bottom: 0.6rem;">Log out</button>
+              </form>
+            </li>
           {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts:register' %}">
-              Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts:login' %}">
-              Log in</a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
+            </li>
           {% endif %}
-
-        </ul> <!-- End of account-related links -->
-
-        {% if user.is_authenticated %}
-        <form action="{% url 'accounts:logout' %}" method='post'>
-          {% csrf_token %}
-          <button name='submit' class='btn btn-outline-secondary btn-sm'>
-            Log out</button>
-        </form>
-        {% endif %}
-
-      </div> <!-- Closes collapsible parts of navbar -->
-
-    </div> <!-- Closes navbar's container -->
-  </nav> <!-- End of navbar -->
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
 
   <main class="container">
     <div class="pb-2 mb-2 border-bottom">
       {% block page_header %}{% endblock page_header %}
     </div>
-
     <div>
       {% block content %}{% endblock content %}
     </div>
   </main>
 
-</body>
+  <footer class="fixed-footer py-3 bg-light border-top text-center"> {# Your custom class is used here #}
+    <div class="container">
+      <span class="text-muted">Developed by Mafron Ronaldo Fernandes</span>
+      <br>
+      <small class="text-muted">© {% now "Y" %} Learning Log. All rights reserved.</small>
+    </div>
+  </footer>
 
+  {% block scripts %}{% endblock scripts %}
+  {% bootstrap_javascript %} {# Moved Bootstrap JS to the end of body #}
+</body>
 </html>
