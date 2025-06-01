@@ -1,5 +1,5 @@
 {% load django_bootstrap5 %}
-{% load static %} {# Still load static in case other things use it, though not for this specific CSS #}
+{% load static %}
 
 <!doctype html>
 <html lang="en">
@@ -10,14 +10,13 @@
 
   {% bootstrap_css %}
 
-  <!-- EMBEDDED CUSTOM CSS -->
+  <!-- EMBEDDED CUSTOM CSS FOR FIXED FOOTER -->
   <style>
     body {
-      /* Add padding to the bottom of the body equal to the footer's height + some breathing room */
-      /* You'll need to determine the footer_height. Let's assume it's around 70px-80px. */
-      /* If your footer text is two lines with default Bootstrap padding, ~60-75px might be its height. */
-      /* Add a bit more for safety. */
-      padding-bottom: 90px; /* Adjust this value as needed */
+      /* Ensure enough padding at the bottom of the body to prevent
+         content from being hidden by the fixed footer.
+         Adjust this value based on your footer's actual height. */
+      padding-bottom: 100px; /* Example value, adjust as needed */
     }
 
     .fixed-footer {
@@ -25,8 +24,8 @@
       left: 0;
       bottom: 0;
       width: 100%;
-      z-index: 1000; /* Ensures it stays on top of other content if needed */
-      /* background-color and other styling are from Bootstrap classes */
+      z-index: 1000; /* Keep footer on top */
+      /* Background, text color etc. are handled by Bootstrap classes */
     }
   </style>
   <!-- END EMBEDDED CUSTOM CSS -->
@@ -75,6 +74,19 @@
   </nav>
 
   <main class="container">
+    <!-- MESSAGES DISPLAY AREA -->
+    {% if messages %}
+      <div class="mt-2"> {# Added some margin-top for spacing #}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <!-- END MESSAGES DISPLAY AREA -->
+
     <div class="pb-2 mb-2 border-bottom">
       {% block page_header %}{% endblock page_header %}
     </div>
@@ -83,7 +95,7 @@
     </div>
   </main>
 
-  <footer class="fixed-footer py-3 bg-light border-top text-center"> {# Your custom class is used here #}
+  <footer class="fixed-footer py-3 bg-light border-top text-center">
     <div class="container">
       <span class="text-muted">Developed by Mafron Ronaldo Fernandes</span>
       <br>
@@ -91,7 +103,9 @@
     </div>
   </footer>
 
-  {% block scripts %}{% endblock scripts %}
-  {% bootstrap_javascript %} {# Moved Bootstrap JS to the end of body #}
+  {% block scripts %}
+    {# Optional: for page-specific JavaScript files #}
+  {% endblock scripts %}
+  {% bootstrap_javascript %}
 </body>
 </html>
