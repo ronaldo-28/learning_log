@@ -1,6 +1,6 @@
+# learning_logs/models.py
 from django.db import models
-from django.contrib.auth.models import User
-
+from django.contrib.auth.models import User # Assuming Topic has an owner
 
 class Topic(models.Model):
     """A topic the user is learning about."""
@@ -13,7 +13,6 @@ class Topic(models.Model):
         """Return a string representation of the model."""
         return self.text
 
-
 class Entry(models.Model):
     """Something specific learned about a topic."""
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
@@ -25,7 +24,8 @@ class Entry(models.Model):
 
     def __str__(self):
         """Return a simple string representing the entry."""
+        # This is where the logic needs to be correct
         if len(self.text) > 50:
-            return f"{self.text[:50]}..."
+            return f"{self.text[:50]}..." # Take the first 50 chars and add ellipsis
         else:
-            return self.text
+            return self.text # Return the full text if 50 chars or less
