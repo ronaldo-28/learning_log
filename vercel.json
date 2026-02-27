@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
   "builds": [
     {
       "src": "ll_project/wsgi.py",
@@ -12,7 +11,6 @@
           "ll_project/**",
           "learning_logs/**",
           "accounts/**",
-          "staticfiles/**",
           "manage.py",
           "requirements.txt",
           "pyproject.toml",
@@ -22,10 +20,6 @@
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/staticfiles/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "ll_project/wsgi.py"
