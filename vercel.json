@@ -18,7 +18,6 @@
           "ll_project/**",
           "learning_logs/**",
           "accounts/**",
-          "templates/**",
           "staticfiles/**",
           "manage.py",
           "requirements.txt",
