@@ -10,7 +10,7 @@ db.sqlite3
 *.sqlite3-journal
 
 # Collected static files
-staticfiles/
+# staticfiles/
 
 # Python cache/compiled files
 __pycache__/
