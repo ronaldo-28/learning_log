@@ -125,7 +125,7 @@ USE_TZ = True              # <-- Kept True (Recommended)
 # Add the leading slash here! Change 'static/' to '/static/'
 STATIC_URL = '/static/' 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 
 # Default primary key field type
@@ -155,3 +155,6 @@ if not DEBUG:
     # SECURE_HSTS_SECONDS = 31536000
     # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     # SECURE_HSTS_PRELOAD = True
+# Add these lines at the bottom
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
