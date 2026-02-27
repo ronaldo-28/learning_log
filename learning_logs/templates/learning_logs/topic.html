@@ -13,9 +13,9 @@
       <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
     </p>
   {% endif %}
-{% endblock page_header %}  {# Make sure this is on its own line #}
+{% endblock page_header %}
 
-{% block content %} {# Make sure this is on its own line #}
+{% block content %}
   {% for entry in entries %}
     <div class="card mb-3">
       <h4 class="card-header">
@@ -26,8 +26,7 @@
         {% endif %}
       </h4>
       <div class="card-body">
-        {{ entry.text|truncatechars:50 }}
-        {# truncated #}
+        {{ entry.preview }}
       </div>
     </div>
   {% empty %}
