@@ -1,13 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
   "builds": [
-    {
-      "src": "build.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "staticfiles"
-      }
-    },
     {
       "src": "ll_project/wsgi.py",
       "use": "@vercel/python",
@@ -21,7 +15,8 @@
           "staticfiles/**",
           "manage.py",
           "requirements.txt",
-          "db.sqlite3"
+          "pyproject.toml",
+          "uv.lock"
         ]
       }
     }
@@ -29,7 +24,7 @@
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/$1"
+      "dest": "/staticfiles/$1"
     },
     {
       "src": "/(.*)",
