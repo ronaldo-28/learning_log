@@ -2,12 +2,36 @@
   "version": 2,
   "builds": [
     {
+      "src": "build.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles"
+      }
+    },
+    {
       "src": "ll_project/wsgi.py",
       "use": "@vercel/python",
-      "config": { "runtime": "python3.12" }
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.12",
+        "includeFiles": [
+          "ll_project/**",
+          "learning_logs/**",
+          "accounts/**",
+          "templates/**",
+          "staticfiles/**",
+          "manage.py",
+          "requirements.txt",
+          "db.sqlite3"
+        ]
+      }
     }
   ],
   "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "ll_project/wsgi.py"
