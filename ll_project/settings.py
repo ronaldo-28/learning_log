@@ -125,7 +125,7 @@ USE_TZ = True              # <-- Kept True (Recommended)
 # Add the leading slash here! Change 'static/' to '/static/'
 STATIC_URL = '/static/' 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 
 # Default primary key field type
