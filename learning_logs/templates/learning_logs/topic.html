@@ -26,7 +26,7 @@
         {% endif %}
       </h4>
       <div class="card-body">
-        {{ entry.preview }}
+        {{ entry.text|truncatechars:50|linebreaks }}
       </div>
     </div>
   {% empty %}
