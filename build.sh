@@ -4,7 +4,6 @@ set -e
 echo "🚀 Starting Django Build..."
 
 echo "📦 Installing dependencies..."
-pip install uv
 uv sync
 echo "✅ Dependencies installed."
 
