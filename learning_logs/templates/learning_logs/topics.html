@@ -1,0 +1,55 @@
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block page_header %}
+  <h2>Topics</h2>
+{% endblock page_header %}
+
+{% block content %}
+  {% if user.is_authenticated and topics %}
+    <h3>Your Topics:</h3>
+    <ul>
+      {% for topic in topics %}
+        <li>
+          <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic.text }}</a>
+          {% if topic.owner == user %}
+            <small class="ms-2">
+              <a href="{% url 'learning_logs:delete_topic' topic.id %}" class="text-danger">(Delete Topic)</a>
+            </small>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li>You haven't added any topics yet.</li>
+      {% endfor %}
+    </ul>
+  {% elif not user.is_authenticated and not public_topics %}
+    <p>
+      No public topics available. Please
+      <a href="{% url 'accounts:login' %}">log in</a> to see your topics or
+      <a href="{% url 'accounts:register' %}">register</a> to create new ones.
+    </p>
+  {% endif %}
+
+  {% if public_topics %}
+    <h3>Public Topics:</h3>
+    <ul>
+      {% for public_topic in public_topics %}
+        <li>
+          <a href="{% url 'learning_logs:topic' public_topic.id %}">{{ public_topic.text }}</a>
+          (by {{ public_topic.owner.username }})
+          {% if public_topic.owner == user %}
+            <small class="ms-2">
+              <a href="{% url 'learning_logs:delete_topic' public_topic.id %}" class="text-danger">(Delete Topic)</a>
+            </small>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li>There are no other public topics available right now.</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if user.is_authenticated %}
+    <p><a href="{% url 'learning_logs:new_topic' %}">Add a new topic</a></p>
+  {% endif %}
+{% endblock content %}
