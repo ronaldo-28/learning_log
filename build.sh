@@ -7,9 +7,9 @@ echo "🚀 Starting Django Build..."
 # handles requirements.txt automatically in the background.
 
 echo "✨ Collecting static files..."
-python manage.py collectstatic --noinput --clear
+python3 manage.py collectstatic --noinput --clear
 
 echo "🗄️ Applying database migrations..."
-python manage.py migrate --noinput
+python3 manage.py migrate --noinput
 
 echo "✅ Build script finished."

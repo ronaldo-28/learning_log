@@ -121,7 +121,9 @@ USE_TZ = True              # <-- Kept True (Recommended)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
-STATIC_URL = 'static/'
+
+# Add the leading slash here! Change 'static/' to '/static/'
+STATIC_URL = '/static/' 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
