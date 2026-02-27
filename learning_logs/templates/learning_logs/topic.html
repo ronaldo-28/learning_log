@@ -27,7 +27,7 @@
       </h4>
       <div class="card-body">
         {# This truncates the text to 50 characters and handles line breaks #}
-        {{ entry.text|linebreaks|truncatechars:50 }}
+        {{ entry.text|truncatechars:50|linebreaks }}
       </div>
     </div>
   {% empty %}
