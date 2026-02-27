@@ -26,7 +26,8 @@
         {% endif %}
       </h4>
       <div class="card-body">
-        {{ entry.text|truncatechars:50|linebreaks }}
+        {# This truncates the text to 50 characters and handles line breaks #}
+        {{ entry.text|linebreaks|truncatechars:50 }}
       </div>
     </div>
   {% empty %}
