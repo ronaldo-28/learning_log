@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "ll_project/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.12",
+        "includeFiles": [
+          "ll_project/**",
+          "learning_logs/**",
+          "accounts/**",
+          "manage.py",
+          "requirements.txt",
+          "pyproject.toml",
+          "uv.lock"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "ll_project/wsgi.py"
+    }
+  ]
+}

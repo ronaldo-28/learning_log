@@ -1,0 +1,39 @@
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block page_header %}
+  <div class="d-flex justify-content-between align-items-center">
+    <h2>{{ topic.text }}</h2>
+    {% if is_owner %}
+      <a href="{% url 'learning_logs:delete_topic' topic.id %}" class="btn btn-sm btn-outline-danger">Delete Topic</a>
+    {% endif %}
+  </div>
+  {% if is_owner %}
+    <p>
+      <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
+    </p>
+  {% endif %}
+{% endblock page_header %}
+
+{% block content %}
+  {% for entry in entries %}
+    <div class="card mb-3">
+      <h4 class="card-header">
+        {{ entry.date_added|date:'M d, Y H:i' }}
+        {% if is_owner %}
+          <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">edit entry</a></small>
+          <small class="ms-2"><a href="{% url 'learning_logs:delete_entry' entry.id %}" class="text-danger">delete entry</a></small>
+        {% endif %}
+      </h4>
+      <div class="card-body">
+        {# This truncates the text to 50 characters and handles line breaks #}
+        {{ entry.text|truncatechars:50|linebreaks }}
+      </div>
+    </div>
+  {% empty %}
+    <p>There are no entries for this topic yet.</p>
+    {% if is_owner %}
+      <p>Be the first to <a href="{% url 'learning_logs:new_entry' topic.id %}">add one</a>!</p>
+    {% endif %}
+  {% endfor %}
+{% endblock content %}
