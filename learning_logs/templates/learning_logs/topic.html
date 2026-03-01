@@ -9,9 +9,7 @@
     {% endif %}
   </div>
   {% if is_owner %}
-    <p>
-      <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
-    </p>
+    <p><a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a></p>
   {% endif %}
 {% endblock page_header %}
 
@@ -26,8 +24,7 @@
         {% endif %}
       </h4>
       <div class="card-body">
-        {# This truncates the text to 50 characters and handles line breaks #}
-        {{ entry.text|truncatechars:50|linebreaks }}
+        {{ entry.preview }}
       </div>
     </div>
   {% empty %}

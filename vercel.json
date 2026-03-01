@@ -12,7 +12,6 @@
           "learning_logs/**",
           "accounts/**",
           "manage.py",
-          "requirements.txt",
           "pyproject.toml",
           "uv.lock"
         ]

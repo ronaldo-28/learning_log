@@ -9,7 +9,6 @@ from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
 def index(request):
-    """The home page for Learning Log."""
     return render(request, 'learning_logs/index.html')
 
 def topics(request):
@@ -27,15 +26,14 @@ def topics(request):
     return render(request, 'learning_logs/topics.html', context)
 
 def topic(request, topic_id):
-    """Show a single topic and all its entries."""
     topic_obj = get_object_or_404(Topic, id=topic_id)
 
     if not topic_obj.public and (not request.user.is_authenticated or topic_obj.owner != request.user):
         raise Http404
 
     is_owner = request.user.is_authenticated and (request.user == topic_obj.owner)
-    
-    # Truncate entry text to 50 chars in the view
+
+    # Truncate in Python - guaranteed to work regardless of template caching
     entries_raw = topic_obj.entry_set.order_by('-date_added')
     entries = []
     for entry in entries_raw:
