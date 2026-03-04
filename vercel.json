@@ -11,6 +11,7 @@
           "ll_project/**",
           "learning_logs/**",
           "accounts/**",
+          "staticfiles/**", 
           "manage.py",
           "pyproject.toml",
           "uv.lock"
