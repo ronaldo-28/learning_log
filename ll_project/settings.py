@@ -173,3 +173,4 @@ MESSAGE_TAGS = {
     message_constants.WARNING: 'warning',
     message_constants.ERROR:   'danger',
 }
+SOCIALACCOUNT_LOGIN_ON_GET = True
