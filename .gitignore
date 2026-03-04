@@ -1,0 +1,29 @@
+# .gitignore (add/ensure these lines exist)
+
+# Environments
+ll_env/
+.env
+
+# SQLite database
+db.sqlite3
+*.sqlite3
+*.sqlite3-journal
+
+# Collected static files
+# staticfiles/
+
+# Python cache/compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Platform.sh local data (if you keep it)
+.platform/local/
+
+# Logs (if you created the directory locally)
+logs/
+
+# IDE / OS files
+.vscode/
+.idea/
+*.DS_Store

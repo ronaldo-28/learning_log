@@ -1,0 +1,43 @@
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block page_header %}
+  <h2>Add a new entry for: {{ topic.text }}</h2>
+{% endblock page_header %}
+
+{% block content %}
+  <form action="{% url 'learning_logs:new_entry' topic.id %}" method='post' id="entryForm" onsubmit="disableSubmitButton()">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% bootstrap_button button_type="submit" content="Add entry" button_class="btn-primary" id="submitButton" %}
+  </form>
+{% endblock content %}
+
+{% block scripts %}
+  {{ super }}
+  <script>
+    function disableSubmitButton() {
+      const submitButton = document.getElementById('submitButton');
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+        // The form will submit naturally. The redirect from the server
+        // will mean we don't strictly need to re-enable it here.
+      }
+      return true; // Ensure form submission proceeds
+    }
+
+    // Optional: If you prefer to attach the event listener more robustly
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   const form = document.getElementById('entryForm');
+    //   const submitButton = document.getElementById('submitButton');
+    //
+    //   if (form && submitButton) {
+    //     form.addEventListener('submit', function() {
+    //       submitButton.disabled = true;
+    //       submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+    //     });
+    //   }
+    // });
+  </script>
+{% endblock scripts %}

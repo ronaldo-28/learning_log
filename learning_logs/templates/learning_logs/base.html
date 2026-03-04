@@ -1,0 +1,281 @@
+{% load django_bootstrap5 %}
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"> <!- Correction: was utf-t ->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Log</title>
+
+  {% bootstrap_css %}
+
+  <!-- EMBEDDED CUSTOM CSS FOR THEMES AND FIXED FOOTER -->
+  <style>
+    /* -------------------------
+       THEME VARIABLES & STYLES
+       ------------------------- */
+    :root {
+      /* Light Mode Default Variables */
+      --bg-color: #ffffff;
+      --text-color: #212529;
+      --secondary-text-color: #6c757d;
+      --border-color: #dee2e6;
+      --link-color: #0d6efd;
+      --navbar-bg: #f8f9fa; /* Bootstrap light bg */
+      --card-bg: #ffffff;
+      --card-header-bg: #f8f9fa;
+      --button-bg: #0d6efd;
+      --button-text-color: #ffffff;
+    }
+
+    body.dark-mode {
+      /* Dark Mode Variable Overrides */
+      --bg-color: #121212; /* Common dark bg */
+      --text-color: #e0e0e0; /* Light gray for text */
+      --secondary-text-color: #a0a0a0;
+      --border-color: #444444;
+      --link-color: #6ea8fe; /* Lighter blue for links */
+      --navbar-bg: #212529; /* Bootstrap dark bg */
+      --card-bg: #1e1e1e;
+      --card-header-bg: #2a2a2a;
+      --button-bg: #6ea8fe;
+      --button-text-color: #121212;
+    }
+
+    /* Apply variables */
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding-bottom: 100px; /* For fixed footer, adjust as needed */
+      transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+    }
+
+    a {
+      color: var(--link-color);
+    }
+    a:hover {
+      color: var(--link-color); /* Keep consistent or adjust for hover */
+      filter: brightness(85%);
+    }
+
+    .navbar {
+      background-color: var(--navbar-bg) !important; /* Important to override Bootstrap */
+      border-bottom-color: var(--border-color) !important;
+    }
+    .navbar .navbar-brand,
+    .navbar .nav-link,
+    .navbar .navbar-text {
+      color: var(--text-color) !important;
+    }
+    .navbar .nav-link:hover {
+      color: var(--secondary-text-color) !important;
+    }
+
+
+    .card {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+    .card-header {
+      background-color: var(--card-header-bg);
+      border-bottom-color: var(--border-color);
+    }
+    .card-body {
+      color: var(--text-color); /* Ensures card body text uses the theme color */
+    }
+
+    .border, .border-bottom, .border-top { /* General borders */
+        border-color: var(--border-color) !important;
+    }
+
+    /* Ensure form inputs are styled for dark mode */
+    body.dark-mode input[type="text"],
+    body.dark-mode input[type="password"],
+    body.dark-mode input[type="email"],
+    body.dark-mode textarea,
+    body.dark-mode select {
+        background-color: #2a2a2a;
+        color: var(--text-color);
+        border-color: var(--border-color);
+    }
+    body.dark-mode input::placeholder,
+    body.dark-mode textarea::placeholder {
+        color: var(--secondary-text-color);
+    }
+    body.dark-mode .form-control:focus {
+        background-color: #2a2a2a;
+        color: var(--text-color);
+        border-color: var(--link-color);
+        box-shadow: 0 0 0 0.25rem rgba(var(--link-color), 0.25); /* Use theme link color for focus */
+    }
+
+
+    /* -------------------------
+       FIXED FOOTER STYLES
+       ------------------------- */
+    .fixed-footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      z-index: 1000;
+      background-color: var(--navbar-bg); /* Use navbar bg for footer for consistency */
+      border-top: 1px solid var(--border-color);
+    }
+    .fixed-footer .text-muted {
+        color: var(--secondary-text-color) !important;
+    }
+
+    /* Theme toggle button specific style */
+    #themeToggle {
+        cursor: pointer;
+        padding: 0.375rem 0.75rem; /* Similar to Bootstrap nav-link padding */
+        user-select: none; /* Prevent text selection on click */
+    }
+
+  </style>
+</head>
+<body>   <!-- <<< THE COMMENT THAT WAS HERE SHOULD BE REMOVED >>> -->
+
+  <!-- Navigation bar -->
+  <nav class="navbar navbar-expand-md navbar-light mb-4"> {# Removed bg-light and border, handled by CSS vars #}
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'learning_logs:index' %}">Learning Log</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+          aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'learning_logs:topics' %}">Topics</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-md-0 align-items-center"> {# Added align-items-center #}
+          <li class="nav-item">
+            <span id="themeToggle" class="nav-link">🌜</span> {# Initial icon, JS will update #}
+          </li>
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <span class="navbar-text me-2">Hello, {{ user.username }}.</span>
+            </li>
+            <li class="nav-item">
+              <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link nav-link" style="padding-top: 0.6rem; padding-bottom: 0.6rem;">Log out</button>
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+
+  <main class="container">
+    {% if messages %}
+      <div class="mt-2">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="pb-2 mb-2"> {# Removed border-bottom, handled by CSS vars #}
+      {% block page_header %}{% endblock page_header %}
+    </div>
+    <div>
+      {% block content %}{% endblock content %}
+    </div>
+  </main>
+
+  <footer class="fixed-footer py-3 text-center"> {# Removed bg-light and border-top #}
+    <div class="container">
+      <span class="text-muted">Developed by Mafron Ronaldo Fernandes</span>
+      <br>
+      <small class="text-muted">© {% now "Y" %} Learning Log. All rights reserved.</small>
+    </div>
+  </footer>
+
+  {% block scripts %}
+  {% endblock scripts %}
+  {% bootstrap_javascript %}
+
+  <!-- JAVASCRIPT FOR THEME TOGGLE -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const themeToggle = document.getElementById('themeToggle');
+      const currentTheme = localStorage.getItem('theme');
+      const body = document.body; // This is the correct <body> element
+
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          body.classList.add('dark-mode');
+          if (themeToggle) themeToggle.textContent = '🌞'; // Sun icon when dark mode is active (to switch to light)
+        } else {
+          body.classList.remove('dark-mode');
+          if (themeToggle) themeToggle.textContent = '🌜'; // Moon icon when light mode is active (to switch to dark)
+        }
+      }
+
+      // Apply saved theme on initial load
+      if (currentTheme) {
+        applyTheme(currentTheme);
+      } else {
+        // Check for system preference if no theme is saved
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          applyTheme('dark');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          applyTheme('light'); // Default to light
+          // localStorage.setItem('theme', 'light'); // Optionally save light as default
+        }
+      }
+
+      // Toggle theme on click
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+          let newTheme = 'light';
+          if (body.classList.contains('dark-mode')) {
+            // It's currently dark, switch to light
+            body.classList.remove('dark-mode');
+            themeToggle.textContent = '🌜'; // Show moon, meaning "click to go dark"
+            newTheme = 'light';
+          } else {
+            // It's currently light, switch to dark
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '🌞'; // Show sun, meaning "click to go light"
+            newTheme = 'dark';
+          }
+          localStorage.setItem('theme', newTheme);
+        });
+      }
+
+      // Listen for system theme changes (optional)
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            const newSystemTheme = event.matches ? "dark" : "light";
+            console.log(`System theme changed to: ${newSystemTheme}`);
+            // Optional: If you want to automatically switch and update localStorage
+            // if (!localStorage.getItem('theme_user_choice')) { // Only if user hasn't made an explicit choice
+            //   applyTheme(newSystemTheme);
+            //   localStorage.setItem('theme', newSystemTheme);
+            // }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
