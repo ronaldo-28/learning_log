@@ -21,4 +21,6 @@ urlpatterns = [
     # --- NEW URLS FOR DELETING ---
     path('delete_topic/<int:topic_id>/', views.delete_topic, name='delete_topic'),
     path('delete_entry/<int:entry_id>/', views.delete_entry, name='delete_entry'),
+     # Add this line right at the end!
+    path('fix-site/', views.fix_site, name='fix_site'),
 ]

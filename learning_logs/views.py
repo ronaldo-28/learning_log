@@ -141,3 +141,16 @@ def delete_entry(request, entry_id):
 
     context = {'entry': entry, 'topic': topic_obj}
     return render(request, 'learning_logs/delete_entry_confirm.html', context)
+
+from django.http import HttpResponse
+
+def fix_site(request):
+    try:
+        from django.contrib.sites.models import Site
+        site, created = Site.objects.get_or_create(
+            id=1, 
+            defaults={'domain': 'learning-log8.vercel.app', 'name': 'Learning Log'}
+        )
+        return HttpResponse(f"<h1>✅ SUCCESS!</h1><p>Site 1 exists. Created just now: {created}</p><p>You can now go to the Login page!</p>")
+    except Exception as e:
+        return HttpResponse(f"<h1>❌ FAILED!</h1><p>Error details: {e}</p><p><b>Note:</b> If it says 'attempt to write a readonly database', it means you forgot to add a Postgres DATABASE_URL in your Vercel Environment Variables, so Vercel is trying to use a read-only SQLite file.</p>")
