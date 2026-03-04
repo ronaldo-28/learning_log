@@ -31,7 +31,7 @@ if not ALLOWED_HOSTS or DEBUG:
 
 ALLOWED_HOSTS = list(set(ALLOWED_HOSTS))
 
-SITE_ID = 1
+SITE_ID = 12
 
 INSTALLED_APPS = [
     # My apps

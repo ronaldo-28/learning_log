@@ -9,7 +9,7 @@ django.setup()
 try:
     from django.contrib.sites.models import Site
     Site.objects.update_or_create(
-        id=1,
+        id=12,
         defaults={
             'domain': 'learning-log8.vercel.app',
             'name': 'Learning Log'
