@@ -6,16 +6,7 @@
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "15mb",
-        "runtime": "python3.12",
-        "includeFiles": [
-          "ll_project/**",
-          "learning_logs/**",
-          "accounts/**",
-          "staticfiles/**", 
-          "manage.py",
-          "pyproject.toml",
-          "uv.lock"
-        ]
+        "runtime": "python3.12"
       }
     }
   ],
