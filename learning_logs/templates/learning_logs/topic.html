@@ -5,35 +5,35 @@
   <div class="d-flex justify-content-between align-items-center">
     <h2>{{ topic.text }}</h2>
     {% if is_owner %}
-      <a href="{% url 'learning_logs:delete_topic' topic.id %}" class="btn btn-sm btn-outline-danger">Delete Topic</a>
+      <div>
+        <a href="{% url 'learning_logs:delete_topic' topic.id %}" class="btn btn-sm btn-outline-danger">Delete Topic</a>
+      </div>
     {% endif %}
   </div>
-  {% if is_owner %}
-    <p>
-      <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
-    </p>
-  {% endif %}
 {% endblock page_header %}
 
 {% block content %}
+  {% if is_owner %}
+    <p>
+      <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-primary">Add new entry</a>
+    </p>
+  {% endif %}
+
   {% for entry in entries %}
     <div class="card mb-3">
       <h4 class="card-header">
         {{ entry.date_added|date:'M d, Y H:i' }}
-        {% if is_owner %}
-          <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">edit entry</a></small>
-          <small class="ms-2"><a href="{% url 'learning_logs:delete_entry' entry.id %}" class="text-danger">delete entry</a></small>
-        {% endif %}
       </h4>
       <div class="card-body">
-        {# HERE IS THE FIX: truncatechars:50 #}
-        {{ entry.text|truncatechars:50|linebreaks }}
+        {# Show first 50 chars #}
+        {{ entry.text|truncatechars:50 }}
+        
+        {# Link to read the rest #}
+        <a href="{% url 'learning_logs:entry' entry.id %}" class="text-decoration-none ms-2">Read full entry &raquo;</a>
       </div>
     </div>
   {% empty %}
     <p>There are no entries for this topic yet.</p>
-    {% if is_owner %}
-      <p>Be the first to <a href="{% url 'learning_logs:new_entry' topic.id %}">add one</a>!</p>
-    {% endif %}
   {% endfor %}
+
 {% endblock content %}
