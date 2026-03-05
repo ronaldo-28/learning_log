@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
-
 def register(request):
     """Register a new user."""
     if request.method != 'POST':
@@ -14,8 +13,11 @@ def register(request):
 
         if form.is_valid():
             new_user = form.save()
+            
             # Log the user in and then redirect to home page.
-            login(request, new_user)
+            # We must specify the backend because we have multiple (ModelBackend + Allauth)
+            login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
+            
             return redirect('learning_logs:index')
 
     # Display a blank or invalid form.

@@ -2,41 +2,37 @@
 {% load django_bootstrap5 %}
 
 {% block page_header %}
-  <div class="d-flex justify-content-between align-items-center">
-    <h2>{{ topic.text }}</h2>
-    {% if is_owner %}
-      <a href="{% url 'learning_logs:delete_topic' topic.id %}" class="btn btn-sm btn-outline-danger">Delete Topic</a>
-    {% endif %}
-  </div>
-  {% if is_owner %}
-    <p>
-      <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
-    </p>
-  {% endif %}
+  <h2>Topics</h2>
 {% endblock page_header %}
 
 {% block content %}
-  {% for entry in entries %}
-    <div class="card mb-3">
-      <h4 class="card-header">
-        {{ entry.date_added|date:'M d, Y H:i' }}
-        {% if is_owner %}
-          <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">edit</a></small>
-          <small class="ms-2"><a href="{% url 'learning_logs:delete_entry' entry.id %}" class="text-danger">delete</a></small>
+  <h3>Your Topics:</h3>
+  <ul class="list-group mb-4">
+    {% for topic in topics %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic.text }}</a>
+        {% if topic.owner == user %}
+            <span class="badge bg-primary rounded-pill">Owner</span>
         {% endif %}
-      </h4>
-      <div class="card-body">
-        {# Show truncated text #}
-        {{ entry.text|truncatechars:50|linebreaks }}
-        
-        {# Link to view full text #}
-        <a href="{% url 'learning_logs:entry' entry.id %}" class="btn btn-sm btn-outline-primary mt-2">Read more...</a>
-      </div>
-    </div>
-  {% empty %}
-    <p>There are no entries for this topic yet.</p>
-    {% if is_owner %}
-      <p>Be the first to <a href="{% url 'learning_logs:new_entry' topic.id %}">add one</a>!</p>
-    {% endif %}
-  {% endfor %}
+      </li>
+    {% empty %}
+      <li class="list-group-item">No topics have been added yet.</li>
+    {% endfor %}
+  </ul>
+
+  {% if public_topics %}
+  <h3>Public Topics:</h3>
+  <ul class="list-group mb-4">
+    {% for topic in public_topics %}
+      <li class="list-group-item">
+        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic.text }}</a>
+        <span class="text-muted small ms-2">(by {{ topic.owner.username }})</span>
+      </li>
+    {% empty %}
+        <li class="list-group-item">No public topics available.</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <a href="{% url 'learning_logs:new_topic' %}" class="btn btn-primary">Add a new topic</a>
 {% endblock content %}
