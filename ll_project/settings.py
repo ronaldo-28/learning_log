@@ -1,8 +1,8 @@
-# ll_project/settings.py
-
 import os
 from pathlib import Path
 import dj_database_url
+
+# Load .env file for local development
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -31,24 +31,12 @@ if not ALLOWED_HOSTS or DEBUG:
 
 ALLOWED_HOSTS = list(set(ALLOWED_HOSTS))
 
-SITE_ID = 12
+# --- Application Definition ---
+
+SITE_ID = 1
 
 INSTALLED_APPS = [
-    # My apps
-    'learning_logs',
-    'accounts',
-
-    # Third party
-    'django_bootstrap5',
-
-    # Allauth
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-
-    # Default Django
+    # Default Django Apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,10 +44,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Required for allauth
+
+    # Third Party Apps
+    'django_bootstrap5',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
+    # My Apps
+    'learning_logs',
+    'accounts',
 ]
 
 MIDDLEWARE = [
-    'django.contrib.sites.middleware.CurrentSiteMiddleware'
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -96,6 +96,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'll_project.wsgi.application'
 
+# --- Database ---
+
 DATABASES = {
     'default': dj_database_url.config(
         conn_max_age=600,
@@ -104,6 +106,8 @@ DATABASES = {
     )
 }
 
+# --- Password Validation ---
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -111,10 +115,14 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# --- Internationalization ---
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
+
+# --- Static Files ---
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -124,15 +132,16 @@ WHITENOISE_AUTOREFRESH = DEBUG
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Auth redirects
+# --- Auth & Social Account Settings ---
+
 LOGIN_REDIRECT_URL = 'learning_logs:index'
 LOGOUT_REDIRECT_URL = 'learning_logs:index'
 LOGIN_URL = 'accounts:login'
 
-# Allauth settings
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -145,7 +154,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# Email — reads from .env locally, from Vercel env vars in production
+# --- Email Settings ---
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -154,7 +164,8 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', '')
 
-# Vercel CSRF
+# --- Security & Vercel ---
+
 CSRF_TRUSTED_ORIGINS = []
 if VERCEL_URL:
     CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_URL.replace("https://", "").rstrip("/")}')
@@ -166,6 +177,7 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
 
+# Bootstrap Styling for Messages
 from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {
     message_constants.DEBUG:   'secondary',
@@ -174,4 +186,3 @@ MESSAGE_TAGS = {
     message_constants.WARNING: 'warning',
     message_constants.ERROR:   'danger',
 }
-SOCIALACCOUNT_LOGIN_ON_GET = True
