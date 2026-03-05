@@ -9,7 +9,9 @@
     {% endif %}
   </div>
   {% if is_owner %}
-    <p><a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a></p>
+    <p>
+      <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
+    </p>
   {% endif %}
 {% endblock page_header %}
 
@@ -24,7 +26,8 @@
         {% endif %}
       </h4>
       <div class="card-body">
-        {{ entry.preview }}
+        {# This filter cuts the text at 50 chars and adds ... #}
+        {{ entry.text|truncatechars:50|linebreaks }}
       </div>
     </div>
   {% empty %}
