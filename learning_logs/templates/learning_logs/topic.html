@@ -26,7 +26,7 @@
         {% endif %}
       </h4>
       <div class="card-body">
-        {# This filter cuts the text at 50 chars and adds ... #}
+        {# HERE IS THE FIX: truncatechars:50 #}
         {{ entry.text|truncatechars:50|linebreaks }}
       </div>
     </div>
