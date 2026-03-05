@@ -139,3 +139,16 @@ def fix_site(request):
         return HttpResponse("<h1>✅ SUCCESS!</h1><p>Site ID 1 is fixed.</p>")
     except Exception as e:
         return HttpResponse(f"<h1>❌ FAILED!</h1><p>Error details: {e}</p>")
+
+def entry(request, entry_id):
+    """Show a single entry and its full text."""
+    entry = get_object_or_404(Entry, id=entry_id)
+    topic = entry.topic
+    
+    # Check if user can view this entry (public topic OR owner)
+    if not topic.public and (not request.user.is_authenticated or topic.owner != request.user):
+        raise Http404
+
+    is_owner = request.user.is_authenticated and (topic.owner == request.user)
+    context = {'entry': entry, 'topic': topic, 'is_owner': is_owner}
+    return render(request, 'learning_logs/entry.html', context)

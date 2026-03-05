@@ -1,0 +1,25 @@
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block page_header %}
+  <h2>{{ topic.text }}</h2>
+{% endblock page_header %}
+
+{% block content %}
+<div class="card">
+  <h4 class="card-header">
+    {{ entry.date_added|date:'M d, Y H:i' }}
+    {% if is_owner %}
+      <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">edit entry</a></small>
+      <small class="ms-2"><a href="{% url 'learning_logs:delete_entry' entry.id %}" class="text-danger">delete entry</a></small>
+    {% endif %}
+  </h4>
+  <div class="card-body">
+    {{ entry.text|linebreaks }}
+  </div>
+</div>
+
+<p class="mt-3">
+  <a href="{% url 'learning_logs:topic' topic.id %}">Back to topic</a>
+</p>
+{% endblock content %}
