@@ -1,0 +1,38 @@
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block page_header %}
+  <h2>Topics</h2>
+{% endblock page_header %}
+
+{% block content %}
+  <h3>Your Topics:</h3>
+  <ul class="list-group mb-4">
+    {% for topic in topics %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic.text }}</a>
+        {% if topic.owner == user %}
+            <span class="badge bg-primary rounded-pill">Owner</span>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li class="list-group-item">No topics have been added yet.</li>
+    {% endfor %}
+  </ul>
+
+  {% if public_topics %}
+  <h3>Public Topics:</h3>
+  <ul class="list-group mb-4">
+    {% for topic in public_topics %}
+      <li class="list-group-item">
+        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic.text }}</a>
+        <span class="text-muted small ms-2">(by {{ topic.owner.username }})</span>
+      </li>
+    {% empty %}
+        <li class="list-group-item">No public topics available.</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <a href="{% url 'learning_logs:new_topic' %}" class="btn btn-primary">Add a new topic</a>
+{% endblock content %}

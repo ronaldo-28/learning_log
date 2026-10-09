@@ -1,0 +1,36 @@
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center">
+  <h2>{{ topic.text }}</h2>
+  {% if is_owner %}
+  <div>
+    <a href="{% url 'learning_logs:delete_topic' topic.id %}" class="btn btn-sm btn-outline-danger">Delete Topic</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock page_header %}
+
+{% block content %}
+{% if is_owner %}
+<p>
+  <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-primary">Add new entry</a>
+</p>
+{% endif %}
+
+{% for entry in entries %}
+<div class="card mb-3">
+  <div class="card-body">
+    {# Show first 50 chars #}
+    {{ entry.text|truncatechars:50 }}
+
+    {# Link to read the rest #}
+    <a href="{% url 'learning_logs:entry' entry.id %}" class="text-decoration-none ms-2">Read full entry &raquo;</a>
+  </div>
+</div>
+{% empty %}
+<p>There are no entries for this topic yet.</p>
+{% endfor %}
+
+{% endblock content %}
